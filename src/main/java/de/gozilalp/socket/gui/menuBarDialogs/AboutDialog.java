@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * This class defines the AboutDialog which is shown by clicking on 'About' in the MenuBar.
+ *
+ * @author grumanda
+ */
 public class AboutDialog extends SocketServerDialog {
 
     private static AboutDialog instance;
@@ -100,15 +105,16 @@ public class AboutDialog extends SocketServerDialog {
         return infoPanel;
     }
 
+    /**
+     * Defines a {@link MouseAdapter} which opens a link to the repo of the library.
+     */
     private final MouseAdapter flatLafOpenBibListener = new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
             try {
                 URI uri = new URI(AboutInformation.FLATLAF_URI);
                 Desktop.getDesktop().browse(uri);
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
-            } catch (IOException ex) {
+            } catch (URISyntaxException | IOException ex) {
                 throw new RuntimeException(ex);
             }
         }

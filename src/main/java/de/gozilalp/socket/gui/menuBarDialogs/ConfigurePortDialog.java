@@ -5,12 +5,15 @@ import de.gozilalp.configSetup.ConfigCommander;
 import de.gozilalp.configSetup.ConfigData;
 import de.gozilalp.configSetup.WrongConfigValueException;
 import de.gozilalp.socket.gui.components.SocketServerDialog;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+/**
+ * This class defines the ConfigurePortDialog which is shown by clicking on
+ * 'Configure port' in the MenuBar.
+ *
+ * @author grumanda
+ */
 public class ConfigurePortDialog extends SocketServerDialog {
 
     private static ConfigurePortDialog instance;
@@ -47,32 +50,24 @@ public class ConfigurePortDialog extends SocketServerDialog {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
         JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!ConfigData.isValidPortValue(textField.getText())) {
-                    JOptionPane.showMessageDialog(getInstance(null), "Invalid port value!",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                try {
-                    ConfigCommander.getInstance().writeNewValue(ConfigData.PORT.getKey(),
-                            textField.getText());
-                    dispose();
-                    Main.start();
-                    dispose();
-                } catch (WrongConfigValueException ex) {
-                    throw new RuntimeException(ex);
-                }
+        applyButton.addActionListener(_ -> {
+            if (!ConfigData.isValidPortValue(textField.getText())) {
+                JOptionPane.showMessageDialog(getInstance(null), "Invalid port value!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                ConfigCommander.getInstance().writeNewValue(ConfigData.PORT.getKEY(),
+                        textField.getText());
+                dispose();
+                Main.start();
+                dispose();
+            } catch (WrongConfigValueException ex) {
+                throw new RuntimeException(ex);
             }
         });
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        cancelButton.addActionListener(_ -> dispose());
         buttonPanel.add(cancelButton);
         buttonPanel.add(applyButton);
         getRootPane().setDefaultButton(applyButton);

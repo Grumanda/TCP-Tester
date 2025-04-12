@@ -1,9 +1,7 @@
-package de.gozilalp.socket;
+package de.gozilalp.socket.backend;
 
 import de.gozilalp.configSetup.ConfigData;
-import de.gozilalp.socket.gui.AbstractMessageTab;
-
-import javax.swing.*;
+import de.gozilalp.socket.gui.tabs.AbstractMessageTab;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,31 +10,37 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+/**
+ * This class hosts the socket server. It is the core of this program.
+ *
+ * @author grumanda
+ */
 public class SocketServerHandler {
 
     private static SocketServerHandler instance;
-    private  ServerSocket serverSocket;
+    private final ServerSocket SERVER_SOCKET;
     private Socket clientSocket;
     private BufferedReader input;
     private PrintWriter output;
-    private ScheduledExecutorService scheduler;
-    private static Logger logger = Logger.getLogger(SocketServerHandler.class.getName());
+    private List<Schedule> scheduleList = new ArrayList<>();
+    private static final Logger LOGGER = Logger.getLogger(SocketServerHandler.class.getName());
     private static AbstractMessageTab messageTab;
 
     private SocketServerHandler() {
         try {
+            // Open the socket server
             int port = Integer.parseInt(ConfigData.PORT.getValue());
-            serverSocket = new ServerSocket(port);
-            logger.info("Startet Server on port " + port);
+            SERVER_SOCKET = new ServerSocket(port);
+            LOGGER.info("Startet Server on port " + port);
 
             new Thread(this::waitForClient).start();
         } catch (IOException e) {
-            logger.severe("Could not start server on port");
+            LOGGER.severe("Could not start server on port");
             throw new RuntimeException(e);
         }
     }
@@ -49,9 +53,13 @@ public class SocketServerHandler {
         return instance;
     }
 
+    /**
+     * This method accepts the client, creates the inbound and outbound
+     * and starts the listening for inbound messages.
+     */
     private void waitForClient() {
         try {
-            clientSocket = serverSocket.accept();
+            clientSocket = SERVER_SOCKET.accept();
             messageTab.getMessageArea().append("[INFO] Client{IP: " + clientSocket.getLocalAddress()
                     + "} connected to server\n");
             input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -63,6 +71,10 @@ public class SocketServerHandler {
         }
     }
 
+    /**
+     * This method creates a thread where inbound messages are processed and
+     * added to the gui.
+     */
     private void listenForMessages() {
         new Thread(() -> {
            try {
@@ -72,18 +84,23 @@ public class SocketServerHandler {
                            DateTimeFormatter.ofPattern("HH:mm:ss"));
                    String fullMessage = "[" + timestamp + "] {RECEIVED}: "
                            + message;
-                   logger.finest(fullMessage);
+                   LOGGER.finest(fullMessage);
                    messageTab.getMessageArea().append(fullMessage + "\n");
                    messageTab.scrollDown();
                }
            } catch (IOException e) {
-               logger.info("Client closed the connection to the server");
+               LOGGER.info("Client closed the connection to the server");
                messageTab.getMessageArea().append("[INFO] Client closed connection\n");
                messageTab.scrollDown();
            }
         }).start();
     }
 
+    /**
+     * This method sends a message to the client.
+     *
+     * @param message Message to send to the client
+     */
     public void sendMessage(String message) {
         if (output != null) {
             output.println(message);
@@ -95,43 +112,71 @@ public class SocketServerHandler {
         }
     }
 
-    public void startAutoMessage(String message, int intervalSeconds) {
-        if (scheduler != null && !scheduler.isShutdown()) {
-            scheduler.shutdown();
-        }
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(() -> sendMessage(message),
+    /**
+     * This method creates a new {@link Schedule} and starts auto messaging.
+     *
+     * @param name Name of the schedule
+     * @param message Message which should be sent
+     * @param intervalSeconds Interval in which the message will be sent
+     */
+    public void startAutoMessage(String name, String message, int intervalSeconds) {
+        Schedule schedule = new Schedule(name, message, intervalSeconds);
+        schedule.getSCHEDULAR().scheduleAtFixedRate(() -> sendMessage(message),
                 0, intervalSeconds, TimeUnit.SECONDS);
-        logger.info("Started auto sending with message '" + message +
+        LOGGER.info("Started auto sending with message '" + message +
                 "' every " + intervalSeconds + " seconds");
+        scheduleList.add(schedule);
     }
 
-    public void stopAutoMessage() {
-        if (scheduler != null) {
-            scheduler.shutdown();
-            logger.info("Stopped auto sending");
+    /**
+     * Stops the sending of a schedule.
+     *
+     * @param scheduleName Name of the schedule
+     */
+    public void stopAutoMessage(String scheduleName) {
+        for (Schedule schedule : scheduleList) {
+            if (scheduleName.equals(schedule.getNAME()) && schedule.getSCHEDULAR() != null) {
+                schedule.getSCHEDULAR().shutdown();
+                LOGGER.info("Stopped auto sending for schedule '" + scheduleName + "'");
+            }
         }
     }
 
+    /**
+     * This method stops all schedules.
+     */
+    public void stopAllAutoMessages() {
+        for (Schedule schedule : scheduleList) {
+            if (schedule.getSCHEDULAR() != null) {
+                schedule.getSCHEDULAR().shutdown();
+            }
+        }
+    }
+
+    /**
+     * This method resets the schedules and the instance.
+     */
     public static void stopInstance() {
         try {
             if (instance != null) {
-                if (instance.scheduler != null) {
-                    instance.scheduler.shutdown();
+                for (Schedule schedule : instance.scheduleList) {
+                    if (schedule.getSCHEDULAR() != null) {
+                        schedule.getSCHEDULAR().shutdown();
+                    }
                 }
+                instance.scheduleList = new ArrayList<>();
                 if (instance.clientSocket != null) {
                     instance.clientSocket.close();
                 }
-                if (instance.serverSocket != null) {
-                    instance.serverSocket.close();
+                if (instance.SERVER_SOCKET != null) {
+                    instance.SERVER_SOCKET.close();
                 }
                 instance = null;
-                logger.info("Server has been stopped");
+                LOGGER.info("Server has been stopped");
             }
         } catch (IOException e) {
-            logger.severe("Could not stop server? " + e.getMessage());
+            LOGGER.severe("Could not stop server? " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
-
 }

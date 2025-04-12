@@ -6,15 +6,18 @@ import de.gozilalp.configSetup.ConfigData;
 import de.gozilalp.configSetup.DefinedLAFs;
 import de.gozilalp.configSetup.WrongConfigValueException;
 import de.gozilalp.socket.gui.components.SocketServerDialog;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class defines the ChangeLafDialog which is shown by clicking on
+ * 'Change Look & Feel' in the MenuBar.
+ *
+ * @author grumanda
+ */
 public class ChangeLafDialog extends SocketServerDialog {
 
     private static ChangeLafDialog instance;
@@ -31,11 +34,11 @@ public class ChangeLafDialog extends SocketServerDialog {
         List<JRadioButton> radioButtonList = new ArrayList<>();
         List<DefinedLAFs> definedLafsList = Arrays.stream(DefinedLAFs.values()).toList();
         for (DefinedLAFs design : definedLafsList) {
-            JRadioButton radioButton = new JRadioButton(design.getConfigValue());
+            JRadioButton radioButton = new JRadioButton(design.getCONFIG_VALUE());
             buttonGroup.add(radioButton);
             radioButtonPanel.add(radioButton);
             radioButtonList.add(radioButton);
-            if (design.getConfigValue().equals(ConfigData.LAF.getValue())) {
+            if (design.getCONFIG_VALUE().equals(ConfigData.LAF.getValue())) {
                 radioButton.setSelected(true);
             }
         }
@@ -44,33 +47,25 @@ public class ChangeLafDialog extends SocketServerDialog {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
         JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (JRadioButton radioButton : radioButtonList) {
-                    if (radioButton.isSelected()) {
-                        try {
-                            ConfigCommander.getInstance().writeNewValue(ConfigData.LAF.getKey(),
-                                    radioButton.getText());
-                            dispose();
-                            Main.start();
-                            for (Window window : JFrame.getWindows()) {
-                                SwingUtilities.updateComponentTreeUI(window);
-                            }
-                        } catch (WrongConfigValueException ex) {
-                            throw new RuntimeException(ex);
+        applyButton.addActionListener(_ -> {
+            for (JRadioButton radioButton : radioButtonList) {
+                if (radioButton.isSelected()) {
+                    try {
+                        ConfigCommander.getInstance().writeNewValue(ConfigData.LAF.getKEY(),
+                                radioButton.getText());
+                        dispose();
+                        Main.start();
+                        for (Window window : JFrame.getWindows()) {
+                            SwingUtilities.updateComponentTreeUI(window);
                         }
+                    } catch (WrongConfigValueException ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             }
         });
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        cancelButton.addActionListener(_ -> dispose());
         buttonPanel.add(cancelButton);
         buttonPanel.add(applyButton);
         getRootPane().setDefaultButton(applyButton);

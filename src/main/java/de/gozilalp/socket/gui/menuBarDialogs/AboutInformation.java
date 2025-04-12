@@ -1,7 +1,10 @@
 package de.gozilalp.socket.gui.menuBarDialogs;
 
-import java.net.URI;
-
+/**
+ * This class defines some constantc for the {@link AboutDialog}.
+ *
+ * @author grumanda
+ */
 public class AboutInformation {
 
     public static final String PROGRAM_NAME = "Socket-Server";

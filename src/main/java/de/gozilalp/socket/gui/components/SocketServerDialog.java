@@ -3,6 +3,12 @@ package de.gozilalp.socket.gui.components;
 import javax.swing.*;
 import java.net.URL;
 
+/**
+ * This class defines the {@link JDialog} for the program.
+ * It only sets some basic settings like the icon.
+ *
+ * @author grumanda
+ */
 public class SocketServerDialog extends JDialog {
 
     protected static final URL ICON_URL = SocketServerJFrame.class.getResource(

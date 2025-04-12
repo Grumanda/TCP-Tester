@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * This class sets up the logic for the config file.
+ * It reads the data from the config file, creates the config file or changes config values.
+ *
+ * @author grumanda
+ */
 public class ConfigCommander {
 
     private static ConfigCommander instance;
@@ -26,14 +32,17 @@ public class ConfigCommander {
         return instance;
     }
 
+    /**
+     * This method reads the config file, checks the values and writes it to {@link ConfigData}.
+     *
+     * @throws WrongConfigValueException exception
+     */
     private void readConfig() throws WrongConfigValueException {
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(CONFIG_FILE);
+        try (Scanner scanner = new Scanner(CONFIG_FILE)) {
             String payload = "";
             while (scanner.hasNextLine()) {
-                // comment ignoring
                 payload = scanner.nextLine();
+                // comment ignoring
                 if (payload.startsWith("//")) {
                     continue;
                 }
@@ -47,14 +56,14 @@ public class ConfigCommander {
                 String value = parts[1];
 
                 // write keys or throw exception
-                if (key.equals(ConfigData.LAF.getKey())) {
+                if (key.equals(ConfigData.LAF.getKEY())) {
                     if (!ConfigData.isValidLafValue(value)) {
                         scanner.close();
                         throw new WrongConfigValueException(key, value);
                     }
                     ConfigData.LAF.setValue(value);
                 }
-                if (key.equals(ConfigData.PORT.getKey())) {
+                if (key.equals(ConfigData.PORT.getKEY())) {
                     if (!ConfigData.isValidPortValue(value)) {
                         scanner.close();
                         throw new WrongConfigValueException(key, value);
@@ -69,17 +78,22 @@ public class ConfigCommander {
             }
         } catch (FileNotFoundException e) {
             createNewConfigFile();
-        } finally {
-            scanner.close();
         }
     }
 
+    /**
+     * This method creates a new config file (and the directory if it does not exist).
+     *
+     * @throws WrongConfigValueException exception
+     */
     public static void createNewConfigFile() throws WrongConfigValueException {
+        // Get directory and check if it exists
         File parentDir = CONFIG_FILE.getParentFile();
         if (!parentDir.exists()) {
             parentDir.mkdirs();
         }
         try {
+            // Copy backup file into directory
             Files.copy(BACKUP_CONFIG.toPath(), CONFIG_FILE.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -88,6 +102,13 @@ public class ConfigCommander {
         getInstance().readConfig();
     }
 
+    /**
+     * This method writes new values into the config file.
+     *
+     * @param key Key of the config
+     * @param value Value for this key
+     * @throws WrongConfigValueException exception
+     */
     public void writeNewValue(String key, String value) throws WrongConfigValueException {
         try {
             // Read the config again and save a list with all columns

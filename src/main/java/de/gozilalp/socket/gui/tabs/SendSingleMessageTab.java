@@ -1,25 +1,28 @@
-package de.gozilalp.socket.gui;
+package de.gozilalp.socket.gui.tabs;
 
-import de.gozilalp.socket.SocketServerHandler;
-
+import de.gozilalp.socket.backend.SocketServerHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+/**
+ * This class defines the tab where the user can only send and receive messages.
+ *
+ * @author grumanda
+ */
 public class SendSingleMessageTab extends AbstractMessageTab {
 
     private static SendSingleMessageTab instance;
-    private JTextArea messageArea;
-    private JTextField messageField;
-    private JButton startToggleServerButton;
-    private JButton sendButton;
     private static boolean serverActivated = false;
-    private SocketServerHandler socketServerHandler;
+    private static JTabbedPane tabbedPaneRoot;
     private JPanel messageDisplayPanel;
     private JPanel userInputPanel;
-    private static JTabbedPane tabbedPaneRoot;
     private JScrollPane messageAreaScrollPane;
-
+    private JButton startToggleServerButton;
+    private JButton sendButton;
+    private JTextArea messageArea;
+    private JTextField messageField;
+    private SocketServerHandler socketServerHandler;
 
     private SendSingleMessageTab() {
         setLayout(new BorderLayout());
@@ -137,5 +140,4 @@ public class SendSingleMessageTab extends AbstractMessageTab {
     public static boolean isServerActivated() {
         return serverActivated;
     }
-
 }

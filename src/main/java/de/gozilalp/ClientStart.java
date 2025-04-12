@@ -6,11 +6,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * This class is not part of the program.
+ * This class provides a client socket in order to test the connection and messaging.
+ *
+ * @author grumanda
+ */
 public class ClientStart {
 
     public static void main(String[] args) {
         String serverAddress = "localhost";
-        int port = 3004;
+        int port = 9999;
 
         try {
             Socket socket = new Socket(serverAddress, port);
@@ -36,11 +42,8 @@ public class ClientStart {
                 writer.println(message);
                 Thread.sleep(10000);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

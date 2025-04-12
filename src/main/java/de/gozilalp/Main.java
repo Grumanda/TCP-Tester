@@ -6,18 +6,25 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJ
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme;
 import de.gozilalp.configSetup.*;
 import de.gozilalp.socket.gui.SocketServerWindow;
-
 import javax.swing.*;
 
+/**
+ * This class defines the main method of the program.
+ *
+ * @author grumanda
+ */
 public class Main {
 
     public static void main(String[] args) {
         start();
     }
 
+    /**
+     * This method starts the program in the right order.
+     */
     public static void start() {
         try {
-            ConfigCommander configCommander = ConfigCommander.getInstance();
+            ConfigCommander.getInstance();
             loadLaF();
             SocketServerWindow.getInstance();
         } catch (WrongConfigValueException e) {
@@ -25,6 +32,9 @@ public class Main {
         }
     }
 
+    /**
+     * This method loads the Look & Feel.
+     */
     private static void loadLaF() {
         switch (ConfigData.LAF.getValue()) {
             case "FLAT_LIGHT_LAF" -> FlatLightLaf.setup();
@@ -40,6 +50,12 @@ public class Main {
         }
     }
 
+    /**
+     * If a value could not be set, this method is called.
+     * It shows an error and gives the user the opportunity to show the {@link ConfigErrorStacktraceDialog}.
+     *
+     * @param e Exception
+     */
     private static void showWrongConfigValueException(WrongConfigValueException e) {
         Object[] options = {"OK", "Show Stacktrace"};
         int choice = JOptionPane.showOptionDialog(

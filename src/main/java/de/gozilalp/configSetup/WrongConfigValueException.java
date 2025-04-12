@@ -1,27 +1,32 @@
 package de.gozilalp.configSetup;
 
+/**
+ * This class defines a exception. It is thrown when a value is not valid.
+ *
+ * @author grumanda
+ */
 public class WrongConfigValueException extends Exception {
 
-    private String key;
-    private String value;
+    private final String KEY;
+    private final String VALUE;
 
     public WrongConfigValueException(String key, String value) {
         super("A not valid value have been set for key '" + key + "'! Value: " + value);
-        this.key = key;
-        this.value = value;
+        this.KEY = key;
+        this.VALUE = value;
     }
 
     public WrongConfigValueException() {
         super("Could not set values for all keys!");
-        this.key = null;
-        this.value = null;
+        this.KEY = null;
+        this.VALUE = null;
     }
 
-    public String getKey() {
-        return key;
+    public String getKEY() {
+        return KEY;
     }
 
-    public String getValue() {
-        return value;
+    public String getVALUE() {
+        return VALUE;
     }
 }
