@@ -13,7 +13,6 @@ Quelle: https://github.com/JFormDesigner/FlatLaf
 
 ## Xerial SQLite JDBC Driver
 Der SQLite JDBC Treber steht unter der **Apache License 2.0**.  
-
 Quelle: https://github.com/xerial/sqlite-jdbc
 
 ### Hinweise zur Nutzung:
