@@ -37,6 +37,7 @@ public class SocketServerHandler {
             int port = Integer.parseInt(ConfigData.PORT.getValue());
             SERVER_SOCKET = new ServerSocket(port);
             LOGGER.info("Startet Server on port " + port);
+            LOGGER.info("IP: " + SERVER_SOCKET.getLocalSocketAddress());
 
             new Thread(this::waitForClient).start();
         } catch (IOException e) {

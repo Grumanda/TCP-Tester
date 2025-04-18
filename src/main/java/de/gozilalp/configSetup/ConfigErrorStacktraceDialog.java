@@ -31,9 +31,9 @@ public class ConfigErrorStacktraceDialog extends JDialog {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(_ -> System.exit(0));
+        okButton.addActionListener(e -> System.exit(0));
         JButton resetConfigButton = new JButton("Reset config");
-        resetConfigButton.addActionListener(_ -> {
+        resetConfigButton.addActionListener(e -> {
             try {
                 ConfigCommander.createNewConfigFile();
             } catch (WrongConfigValueException ex) {

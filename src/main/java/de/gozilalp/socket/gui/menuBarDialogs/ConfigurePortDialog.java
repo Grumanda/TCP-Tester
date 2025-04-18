@@ -50,7 +50,7 @@ public class ConfigurePortDialog extends SocketServerDialog {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
         JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(_ -> {
+        applyButton.addActionListener(e -> {
             if (!ConfigData.isValidPortValue(textField.getText())) {
                 JOptionPane.showMessageDialog(getInstance(null), "Invalid port value!",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -67,7 +67,7 @@ public class ConfigurePortDialog extends SocketServerDialog {
             }
         });
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(_ -> dispose());
+        cancelButton.addActionListener(e -> dispose());
         buttonPanel.add(cancelButton);
         buttonPanel.add(applyButton);
         getRootPane().setDefaultButton(applyButton);

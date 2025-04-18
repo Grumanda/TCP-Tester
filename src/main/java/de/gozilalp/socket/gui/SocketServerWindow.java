@@ -53,10 +53,10 @@ public class SocketServerWindow extends SocketServerJFrame {
         // Settings Menu
         JMenu settingsMenu = new JMenu("Settings");
         JMenuItem changeLafItem = new JMenuItem("Change Look & Feel");
-        changeLafItem.addActionListener(_ -> ChangeLafDialog.getInstance(getInstance()));
+        changeLafItem.addActionListener(e -> ChangeLafDialog.getInstance(getInstance()));
 
         JMenuItem configurePortItem = new JMenuItem("Configure Port");
-        configurePortItem.addActionListener(_ -> {
+        configurePortItem.addActionListener(e -> {
             if (SendSingleMessageTab.isServerActivated()
                     || SendConstantMessagesTab.isServerActivated()) {
                 JOptionPane.showMessageDialog(getInstance(),
@@ -73,7 +73,7 @@ public class SocketServerWindow extends SocketServerJFrame {
         // Help Menu
         JMenu helpMenu = new JMenu("Help");
         JMenuItem reportBugItem = new JMenuItem("Report Bug");
-        reportBugItem.addActionListener(_ -> {
+        reportBugItem.addActionListener(e -> {
             try {
                 URI uri = new URI("https://github.com/Grumanda/TCP-Tester/issues");
                 if (Desktop.isDesktopSupported()) {
@@ -86,7 +86,7 @@ public class SocketServerWindow extends SocketServerJFrame {
         });
         helpMenu.add(reportBugItem);
         JMenuItem aboutItem = new JMenuItem("About");
-        aboutItem.addActionListener(_ -> AboutDialog.getInstance(getInstance()));
+        aboutItem.addActionListener(e -> AboutDialog.getInstance(getInstance()));
         helpMenu.add(aboutItem);
 
         menuBar.add(helpMenu);

@@ -54,7 +54,7 @@ public class AddScheduleToTableDialog extends SocketServerDialog {
         buttonPanel.setLayout(new GridLayout(1, 2));
         ADD_BUTTON = new JButton("Add");
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(_ -> dispose());
+        cancelButton.addActionListener(e -> dispose());
         buttonPanel.add(cancelButton);
         buttonPanel.add(ADD_BUTTON);
 

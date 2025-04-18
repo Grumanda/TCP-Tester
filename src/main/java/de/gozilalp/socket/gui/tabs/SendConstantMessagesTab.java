@@ -67,9 +67,9 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
             addToTableButton = new JButton("Add");
             addToTableButton.setBackground(Color.GREEN);
             addToTableButton.setEnabled(false);
-            addToTableButton.addActionListener(_ -> {
+            addToTableButton.addActionListener(e -> {
                 AddScheduleToTableDialog dialog = new AddScheduleToTableDialog();
-                dialog.getADD_BUTTON().addActionListener(_ -> {
+                dialog.getADD_BUTTON().addActionListener(e1 -> {
                     if (dialog.isValidInput()) {
                         String name = dialog.getNAME_INPUT().getText();
                         String payload = dialog.getPAYLOAD_INPUT().getText();
@@ -86,7 +86,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
 
             JButton deleteButton = new JButton("Delete");
             deleteButton.setBackground(Color.RED);
-            deleteButton.addActionListener(_ -> {
+            deleteButton.addActionListener(e -> {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     socketServerHandler.stopAutoMessage(model.getValueAt(selectedRow, 0).toString());

@@ -47,7 +47,7 @@ public class ChangeLafDialog extends SocketServerDialog {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, 2));
         JButton applyButton = new JButton("Apply");
-        applyButton.addActionListener(_ -> {
+        applyButton.addActionListener(e -> {
             for (JRadioButton radioButton : radioButtonList) {
                 if (radioButton.isSelected()) {
                     try {
@@ -65,7 +65,7 @@ public class ChangeLafDialog extends SocketServerDialog {
             }
         });
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(_ -> dispose());
+        cancelButton.addActionListener(e -> dispose());
         buttonPanel.add(cancelButton);
         buttonPanel.add(applyButton);
         getRootPane().setDefaultButton(applyButton);
