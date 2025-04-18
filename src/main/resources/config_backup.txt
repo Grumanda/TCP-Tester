@@ -1,4 +1,0 @@
-//This is the config file
-
-LAF=FLAT_MATERIAL_DESIGN_DARK_IJTHEME
-PORT=9090

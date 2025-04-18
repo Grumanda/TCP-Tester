@@ -16,4 +16,7 @@ public class AboutInformation {
     public static final String FLATLAF_INTELLIJ_LINK =
             "<html><a href='https://github.com/JFormDesigner/FlatLaf'>FlatLaf IntelliJ Themes</a></html>";
     public static final String FLATLAF_URI = "https://github.com/JFormDesigner/FlatLaf";
+    public static final String XERIAL_DRIVER = "<html><a href='https://github.com/xerial/sqlite-jdbc'>Xerial SQLite Driver</a></html>";
+    public static final String XERIAL_URI = "https://github.com/xerial/sqlite-jdbc";
+
 }

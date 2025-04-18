@@ -1,9 +1,8 @@
 package de.gozilalp.socket.gui.menuBarDialogs;
 
 import de.gozilalp.Main;
-import de.gozilalp.configSetup.ConfigCommander;
 import de.gozilalp.configSetup.ConfigData;
-import de.gozilalp.configSetup.WrongConfigValueException;
+import de.gozilalp.configSetup.DatabaseManager;
 import de.gozilalp.socket.gui.components.SocketServerDialog;
 import javax.swing.*;
 import java.awt.*;
@@ -57,12 +56,19 @@ public class ConfigurePortDialog extends SocketServerDialog {
                 return;
             }
             try {
-                ConfigCommander.getInstance().writeNewValue(ConfigData.PORT.getKEY(),
-                        textField.getText());
+//                ConfigCommander.getInstance().writeNewValue(ConfigData.PORT.getKEY(),
+//                        textField.getText());
+                if (ConfigData.isValidPortValue(textField.getText())) {
+                    DatabaseManager dbManager = new DatabaseManager();
+                    dbManager.setPort(textField.getText());
+                } else {
+                    JOptionPane.showMessageDialog(instance, "Invalid Port!",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 dispose();
                 Main.start();
                 dispose();
-            } catch (WrongConfigValueException ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         });

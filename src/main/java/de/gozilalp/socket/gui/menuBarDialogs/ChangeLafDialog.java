@@ -1,10 +1,9 @@
 package de.gozilalp.socket.gui.menuBarDialogs;
 
 import de.gozilalp.Main;
-import de.gozilalp.configSetup.ConfigCommander;
 import de.gozilalp.configSetup.ConfigData;
+import de.gozilalp.configSetup.DatabaseManager;
 import de.gozilalp.configSetup.DefinedLAFs;
-import de.gozilalp.configSetup.WrongConfigValueException;
 import de.gozilalp.socket.gui.components.SocketServerDialog;
 import javax.swing.*;
 import java.awt.*;
@@ -51,14 +50,22 @@ public class ChangeLafDialog extends SocketServerDialog {
             for (JRadioButton radioButton : radioButtonList) {
                 if (radioButton.isSelected()) {
                     try {
-                        ConfigCommander.getInstance().writeNewValue(ConfigData.LAF.getKEY(),
-                                radioButton.getText());
+                        if (ConfigData.isValidLafValue(radioButton.getText())) {
+                            DatabaseManager dbManager = new DatabaseManager();
+                            dbManager.setLaf(radioButton.getText());
+                        } else {
+                            // should not happen, but you never know
+                            JOptionPane.showMessageDialog(instance, "Invalid LaF!",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+//                        ConfigCommander.getInstance().writeNewValue(ConfigData.LAF.getKEY(),
+//                                radioButton.getText());
                         dispose();
                         Main.start();
                         for (Window window : JFrame.getWindows()) {
                             SwingUtilities.updateComponentTreeUI(window);
                         }
-                    } catch (WrongConfigValueException ex) {
+                    } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
                 }

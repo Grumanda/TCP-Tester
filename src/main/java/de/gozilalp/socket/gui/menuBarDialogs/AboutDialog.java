@@ -68,6 +68,9 @@ public class AboutDialog extends SocketServerDialog {
         JLabel flatIntelliJThemeBibInput = new JLabel(AboutInformation.FLATLAF_INTELLIJ_LINK);
         flatIntelliJThemeBibInput.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         flatIntelliJThemeBibInput.addMouseListener(flatLafOpenBibListener);
+        JLabel jdbcDriverInput = new JLabel(AboutInformation.XERIAL_DRIVER);
+        jdbcDriverInput.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jdbcDriverInput.addMouseListener(driverOpenBibListener);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 15,5, 15);
@@ -90,6 +93,8 @@ public class AboutDialog extends SocketServerDialog {
         infoPanel.add(flatLafBibInput, gbc);
         gbc.gridy = 7;
         infoPanel.add(flatIntelliJThemeBibInput, gbc);
+        gbc.gridy = 8;
+        infoPanel.add(jdbcDriverInput, gbc);
 
         gbc.gridwidth = 1;
         gbc.gridy = 0;
@@ -113,6 +118,21 @@ public class AboutDialog extends SocketServerDialog {
         public void mouseClicked(MouseEvent e) {
             try {
                 URI uri = new URI(AboutInformation.FLATLAF_URI);
+                Desktop.getDesktop().browse(uri);
+            } catch (URISyntaxException | IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    };
+
+    /**
+     * Defines a {@link MouseAdapter} which opens a link to the repo of the library.
+     */
+    private final MouseAdapter driverOpenBibListener = new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            try {
+                URI uri = new URI(AboutInformation.XERIAL_URI);
                 Desktop.getDesktop().browse(uri);
             } catch (URISyntaxException | IOException ex) {
                 throw new RuntimeException(ex);

@@ -1,5 +1,8 @@
 package de.gozilalp.socket.gui;
 
+import de.gozilalp.configSetup.DatabaseManager;
+import de.gozilalp.featureTour.FeatureTour;
+import de.gozilalp.featureTour.TourStep;
 import de.gozilalp.socket.gui.components.SocketServerJFrame;
 import de.gozilalp.socket.gui.menuBarDialogs.AboutDialog;
 import de.gozilalp.socket.gui.menuBarDialogs.ChangeLafDialog;
@@ -11,6 +14,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * This class defines the main window of the program.
@@ -20,6 +24,9 @@ import java.net.URISyntaxException;
 public class SocketServerWindow extends SocketServerJFrame {
 
     private static SocketServerWindow instance;
+    private JMenuBar menuBar;
+    private JMenu settingsMenu;
+    private JMenu helpMenu;
 
     private SocketServerWindow() {
         // Settings
@@ -38,6 +45,29 @@ public class SocketServerWindow extends SocketServerJFrame {
 
         add(tabbedPane);
         setVisible(true);
+
+        // Show feature tour
+        DatabaseManager dbManager = new DatabaseManager();
+        if (dbManager.getTour().equals("1")) {
+            FeatureTour tour = new FeatureTour(this, List.of(
+                    new TourStep(settingsMenu, "Here you can edit the 'Look & Feel'" +
+                            " and change the port for your socket server",
+                            0, 20, 75, 0),
+                    new TourStep(helpMenu, "You can look about some information" +
+                            " about the software and report a bug here",
+                            0, 50, 100, 0),
+                    new TourStep(singleTab.getMessageDisplayPanel(), "In this area you " +
+                            "can see messages you have sent or received",
+                            -650, 50, 75, 0),
+                    new TourStep(singleTab.getStartToggleServerButton(),
+                            "With this button, you can start or stop the server",
+                            -650, -100, 75, 0),
+                    new TourStep(singleTab.getUserInputPanel(), "Here you " +
+                            "can type in your message and send the message",
+                            -650, 0, 75, 0)
+            ));
+            tour.start();
+        }
     }
 
     public static SocketServerWindow getInstance() {
@@ -48,10 +78,10 @@ public class SocketServerWindow extends SocketServerJFrame {
     }
 
     private void addMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
+        menuBar = new JMenuBar();
 
         // Settings Menu
-        JMenu settingsMenu = new JMenu("Settings");
+        settingsMenu = new JMenu("Settings");
         JMenuItem changeLafItem = new JMenuItem("Change Look & Feel");
         changeLafItem.addActionListener(e -> ChangeLafDialog.getInstance(getInstance()));
 
@@ -71,7 +101,7 @@ public class SocketServerWindow extends SocketServerJFrame {
         menuBar.add(settingsMenu);
 
         // Help Menu
-        JMenu helpMenu = new JMenu("Help");
+        helpMenu = new JMenu("Help");
         JMenuItem reportBugItem = new JMenuItem("Report Bug");
         reportBugItem.addActionListener(e -> {
             try {

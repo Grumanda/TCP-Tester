@@ -26,7 +26,7 @@ public class AddScheduleToTableDialog extends SocketServerDialog {
         componentsPanel.setLayout(new GridBagLayout());
         JLabel nameLabel = new JLabel("Name:");
         JLabel payloadLabel = new JLabel("Payload:");
-        JLabel intervalLabel = new JLabel("Interval:");
+        JLabel intervalLabel = new JLabel("Interval (in s):");
         NAME_INPUT = new JTextField();
         PAYLOAD_INPUT = new JTextField();
         INTERVAL_INPUT = new JTextField();
