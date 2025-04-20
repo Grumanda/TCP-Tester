@@ -20,6 +20,6 @@ public class SocketServerDialog extends JDialog {
         setSize(400, 550);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setAlwaysOnTop(true);
+        setModal(true);
     }
 }

@@ -40,7 +40,7 @@ public class SendSingleMessageTab extends AbstractMessageTab {
         return instance;
     }
 
-    private JPanel getMessageDisplayPanel() {
+    public JPanel getMessageDisplayPanel() {
         if (messageDisplayPanel == null) {
             messageDisplayPanel = new JPanel();
             messageDisplayPanel.setLayout(new BorderLayout());
@@ -57,7 +57,7 @@ public class SendSingleMessageTab extends AbstractMessageTab {
         return messageAreaScrollPane;
     }
 
-    private JButton getStartToggleServerButton() {
+    public JButton getStartToggleServerButton() {
         if (startToggleServerButton == null) {
             startToggleServerButton = new JButton("START");
             startToggleServerButton.setBackground(Color.GREEN);
@@ -68,7 +68,7 @@ public class SendSingleMessageTab extends AbstractMessageTab {
         return startToggleServerButton;
     }
 
-    private JPanel getUserInputPanel() {
+    public JPanel getUserInputPanel() {
         if (userInputPanel == null) {
             userInputPanel = new JPanel();
             userInputPanel.setLayout(new BorderLayout());

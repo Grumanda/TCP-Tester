@@ -15,6 +15,8 @@ import javax.swing.*;
  */
 public class Main {
 
+    private static final String DO_TOUR_TEXT = "Do you want to do a quick tour?";
+
     public static void main(String[] args) {
         start();
     }
@@ -23,13 +25,22 @@ public class Main {
      * This method starts the program in the right order.
      */
     public static void start() {
-        try {
-            ConfigCommander.getInstance();
-            loadLaF();
-            SocketServerWindow.getInstance();
-        } catch (WrongConfigValueException e) {
-            showWrongConfigValueException(e);
+        DatabaseManager dbManager = new DatabaseManager();
+        ConfigData.LAF.setValue(dbManager.getLaf());
+        ConfigData.PORT.setValue(dbManager.getPort());
+        loadLaF();
+        // Check if tour should be shown
+        if (dbManager.getTour().equals("0")) {
+            int doTour = JOptionPane.showOptionDialog(null, DO_TOUR_TEXT,
+                    "Feature Tour", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE, null, null, null);
+            if (doTour == JOptionPane.YES_OPTION) {
+                dbManager.setTour("1");
+            } else {
+                dbManager.setTour("2");
+            }
         }
+        SocketServerWindow.getInstance();
     }
 
     /**
@@ -47,31 +58,6 @@ public class Main {
             case "FLAT_ATOM_ONE_LIGHT_IJTHEME" -> FlatAtomOneLightIJTheme.setup();
             case "FLAT_MATERIAL_LIGHTER_IJTHEME" -> FlatMaterialLighterIJTheme.setup();
             default -> FlatLightLaf.setup();
-        }
-    }
-
-    /**
-     * If a value could not be set, this method is called.
-     * It shows an error and gives the user the opportunity to show the {@link ConfigErrorStacktraceDialog}.
-     *
-     * @param e Exception
-     */
-    private static void showWrongConfigValueException(WrongConfigValueException e) {
-        Object[] options = {"OK", "Show Stacktrace"};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "An error occured while reading the config file!",
-                "Error",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.ERROR_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
-        if (choice == 0 || choice == -1) {
-            System.exit(0);
-        } else {
-            new ConfigErrorStacktraceDialog(e.getLocalizedMessage());
         }
     }
 }

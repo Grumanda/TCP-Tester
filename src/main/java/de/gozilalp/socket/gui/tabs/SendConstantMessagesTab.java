@@ -1,10 +1,13 @@
 package de.gozilalp.socket.gui.tabs;
 
+import de.gozilalp.configSetup.DatabaseManager;
+import de.gozilalp.socket.backend.Schedule;
 import de.gozilalp.socket.backend.SocketServerHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * This class defines the tab where the user can also create schedules.
@@ -26,6 +29,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
     private JButton startToggleServerButton;
     private JButton sendButton;
     private JButton addToTableButton;
+    private JButton deleteButton;
     private JTextArea messageArea;
     private JTextField messageField;
     private SocketServerHandler socketServerHandler;
@@ -48,14 +52,22 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
         return messageDisplayAndSettingsPanel;
     }
 
-    private JPanel getScheduleTablePanel() {
+    public JPanel getScheduleTablePanel() {
         if (scheduleTablePanel == null) {
             scheduleTablePanel = new JPanel();
             scheduleTablePanel.setLayout(new BorderLayout());
             model = new DefaultTableModel();
             model.addColumn("Name");
             model.addColumn("Payload");
-            model.addColumn("Interval");
+            model.addColumn("Interval (s)");
+
+            //database data import
+            DatabaseManager dbManager = new DatabaseManager();
+            List<Schedule> scheduleList = dbManager.getAllSchedules();
+            for (Schedule schedule : scheduleList) {
+                model.addRow(new Object[]{schedule.getNAME(), schedule.getPAYLOAD(),
+                        schedule.getINTERVAL()});
+            }
 
             table = new JTable(model);
             JScrollPane scrollPane = new JScrollPane(table);
@@ -76,20 +88,24 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
                         int interval = Integer.parseInt(dialog.getINTERVAL_INPUT().getText());
                         model.addRow(new Object[]{name, payload, interval});
                         socketServerHandler.startAutoMessage(name, payload, interval);
+                        dbManager.addSchedule(name, payload, interval);
                         dialog.dispose();
                     } else {
                         JOptionPane.showMessageDialog(dialog, "Invalid inputs!",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 });
+                dialog.setVisible(true);
             });
 
-            JButton deleteButton = new JButton("Delete");
+            deleteButton = new JButton("Delete");
             deleteButton.setBackground(Color.RED);
+            deleteButton.setEnabled(false);
             deleteButton.addActionListener(e -> {
                 int selectedRow = table.getSelectedRow();
                 if (selectedRow != -1) {
                     socketServerHandler.stopAutoMessage(model.getValueAt(selectedRow, 0).toString());
+                    dbManager.deleteScheduleByName(model.getValueAt(selectedRow, 0).toString());
                     model.removeRow(selectedRow);
                 }
             });
@@ -110,7 +126,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
         return instance;
     }
 
-    private JPanel getMessageDisplayPanel() {
+    public JPanel getMessageDisplayPanel() {
         if (messageDisplayPanel == null) {
             messageDisplayPanel = new JPanel();
             messageDisplayPanel.setLayout(new BorderLayout());
@@ -127,7 +143,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
         return messageAreaScrollPane;
     }
 
-    private JButton getStartToggleServerButton() {
+    public JButton getStartToggleServerButton() {
         if (startToggleServerButton == null) {
             startToggleServerButton = new JButton("START");
             startToggleServerButton.setBackground(Color.GREEN);
@@ -138,7 +154,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
         return startToggleServerButton;
     }
 
-    private JPanel getUserInputPanel() {
+    public JPanel getUserInputPanel() {
         if (userInputPanel == null) {
             userInputPanel = new JPanel();
             userInputPanel.setLayout(new BorderLayout());
@@ -168,11 +184,17 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
             startToggleServerButton.setBackground(Color.RED);
             startToggleServerButton.setText("STOP");
             socketServerHandler = SocketServerHandler.getInstance(this);
+            for (int row = 0; row < model.getRowCount(); row++) {
+                socketServerHandler.startAutoMessage(model.getValueAt(row, 0).toString(),
+                        model.getValueAt(row, 1).toString(),
+                        Integer.parseInt(model.getValueAt(row, 2).toString()));
+            }
             messageArea.append("[INFO] SERVER STARTED\n");
             scrollDown();
             sendButton.setEnabled(true);
             tabbedPaneRoot.setEnabled(false);
             addToTableButton.setEnabled(true);
+            deleteButton.setEnabled(true);
         } else {
             serverActivated = false;
             startToggleServerButton.setBackground(Color.GREEN);
@@ -183,7 +205,7 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
             sendButton.setEnabled(false);
             tabbedPaneRoot.setEnabled(true);
             addToTableButton.setEnabled(false);
-            model.setRowCount(0);
+            deleteButton.setEnabled(false);
         }
     }
 
