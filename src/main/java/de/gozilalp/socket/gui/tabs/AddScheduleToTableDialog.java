@@ -60,7 +60,6 @@ public class AddScheduleToTableDialog extends SocketServerDialog {
 
         add(componentsPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
-        setVisible(true);
     }
 
     public JTextField getNAME_INPUT() {

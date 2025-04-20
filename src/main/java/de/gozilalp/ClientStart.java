@@ -16,7 +16,7 @@ public class ClientStart {
 
     public static void main(String[] args) {
         String serverAddress = "localhost";
-        int port = 5070;
+        int port = 3004;
 
         try {
             Socket socket = new Socket(serverAddress, port);
