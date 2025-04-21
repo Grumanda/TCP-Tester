@@ -44,7 +44,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>dein.paket.MainKlasse</mainClass>
+                            <mainClass>de.gozilalp.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
