@@ -82,7 +82,15 @@ public class SendConstantMessagesTab extends AbstractMessageTab {
             addToTableButton.addActionListener(e -> {
                 AddScheduleToTableDialog dialog = new AddScheduleToTableDialog();
                 dialog.getADD_BUTTON().addActionListener(e1 -> {
-                    if (dialog.isValidInput()) {
+                    List<Schedule> allSchedules = dbManager.getAllSchedules();
+                    boolean scheduleAlreadyExists = false;
+                    for (Schedule schedule : allSchedules) {
+                        if (schedule.getNAME().equals(dialog.getNAME_INPUT().getText())) {
+                            scheduleAlreadyExists = true;
+                            break;
+                        }
+                    }
+                    if (dialog.isValidInput() && !scheduleAlreadyExists) {
                         String name = dialog.getNAME_INPUT().getText();
                         String payload = dialog.getPAYLOAD_INPUT().getText();
                         int interval = Integer.parseInt(dialog.getINTERVAL_INPUT().getText());

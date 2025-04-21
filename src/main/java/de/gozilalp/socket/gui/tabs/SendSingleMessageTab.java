@@ -7,7 +7,9 @@ import java.awt.event.ActionEvent;
 
 /**
  * This class defines the tab where the user can only send and receive messages.
+ * This class is no longer in use because the {@link SendConstantMessagesTab} also has the same functions.
  *
+ * @deprecated
  * @author grumanda
  */
 public class SendSingleMessageTab extends AbstractMessageTab {
